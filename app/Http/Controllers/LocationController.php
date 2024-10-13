@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Auth;
 
 class LocationController extends Controller
 {
+    public function create()
+    {
+        return Inertia::render('Location/Create');
+    }
     public function index()
     {
         $user = Auth::user();
@@ -55,6 +59,8 @@ class LocationController extends Controller
         ]);
 
         Location::create(array_merge($validatedData, ['retail_id' => Auth::user()?->retail_id]));
+
+        return redirect()->route('locations.index')->with('success', 'Location added successfully');
     }
 
 

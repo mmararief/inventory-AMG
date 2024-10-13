@@ -17,6 +17,15 @@ use Illuminate\Database\QueryException;
 class ProductController extends Controller
 {
     //
+
+    public function create()
+    {
+        return Inertia::render('Products/Create', [
+            'initialCategories' => Category::where('retail_id', Auth::user()?->retail_id)->get(),
+            'initialBrands' => Brand::where('retail_id', Auth::user()?->retail_id)->get(),
+            'initialTypes' => Type::where('retail_id', Auth::user()?->retail_id)->get(),
+        ]);
+    }
     public function index(Request $request)
     {
         $userStatus = Auth::user()->retail->status;
@@ -77,14 +86,7 @@ class ProductController extends Controller
 
 
 
-        // Fetch the updated list of products
-        $products = Product::with(['category', 'brand', 'type'])
-            ->where('retail_id', Auth::user()?->retail_id)
-            ->paginate(10);
-
-        return Inertia::render('Products/Index', [
-            'initialProducts' => $products,
-        ]);
+        return redirect()->route('product.index')->with('success', 'Product added successfully');
     }
 
     public function destroy(Product $product)

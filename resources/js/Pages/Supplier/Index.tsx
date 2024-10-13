@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Plus, Pencil, Trash2, Search } from "lucide-react";
-import SupplierCreate from "./create";
+import { Plus, Pencil, Trash2, Search, Link } from "lucide-react";
+
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
 import SubscriptionPage from "../SubscriptionPage";
@@ -120,7 +120,14 @@ export default function SupplierManagement(props: {
                                         }
                                     />
                                 </div>
-                                <SupplierCreate />
+                                <Button
+                                    onClick={() =>
+                                        router.visit(route("supplier.create"))
+                                    }
+                                >
+                                    <Plus className="h-4 w-4 mr-2" />
+                                    Add Supplier
+                                </Button>
                             </div>
                         </CardHeader>
                         <CardContent>

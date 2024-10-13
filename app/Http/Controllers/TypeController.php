@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Auth;
 
 class TypeController extends Controller
 {
+    public function create()
+    {
+        $categories = Category::where('retail_id', Auth::user()?->retail_id)->get();
+        return Inertia::render('Type/Create', [
+            'categories' => $categories
+        ]);
+    }
     public function index()
     {
         $user = Auth::user();

@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Auth;
 
 class SupplierController extends Controller
 {
+
+    public function create()
+    {
+        return Inertia::render('Supplier/create');
+    }
     public function index()
     {
         $user = Auth::user();
@@ -18,7 +23,11 @@ class SupplierController extends Controller
     }
     public function store(Request $request)
     {
-        $supplier = Supplier::create(array_merge($request->all(), ['retail_id' => Auth::user()?->retail_id]));
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'contact_info' => 'required|string|max:255',
+        ]);
+        $supplier = Supplier::create(array_merge($validatedData, ['retail_id' => Auth::user()?->retail_id]));
         return redirect()->route('supplier.index')->with('success', 'Supplier created successfully');
     }
 

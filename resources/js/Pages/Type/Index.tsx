@@ -202,99 +202,15 @@ export default function TypeManagement({
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                <Dialog
-                                    open={isAddDialogOpen}
-                                    onOpenChange={setIsAddDialogOpen}
+
+                                <Button
+                                    onClick={() =>
+                                        router.visit("/types/create")
+                                    }
                                 >
-                                    <DialogTrigger asChild>
-                                        <Button>
-                                            <Plus className="mr-2 h-4 w-4" />
-                                            Add Type
-                                        </Button>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        <form onSubmit={handleAddType}>
-                                            <DialogHeader>
-                                                <DialogTitle>
-                                                    Add New Product Type
-                                                </DialogTitle>
-                                                <DialogDescription>
-                                                    Enter the details for the
-                                                    new product type.
-                                                </DialogDescription>
-                                            </DialogHeader>
-                                            <div className="grid gap-4 py-4">
-                                                <div className="grid grid-cols-4 items-center gap-4">
-                                                    <Label
-                                                        htmlFor="category"
-                                                        className="text-right"
-                                                    >
-                                                        Category
-                                                    </Label>
-                                                    <div className="col-span-3">
-                                                        <Combobox
-                                                            className="w-full"
-                                                            items={categories.map(
-                                                                (category) => ({
-                                                                    value: category.id.toString(),
-                                                                    label: category.name,
-                                                                })
-                                                            )}
-                                                            placeholder="Select a category"
-                                                            onSelect={(value) =>
-                                                                setNewType({
-                                                                    ...newType,
-                                                                    category: {
-                                                                        id: parseInt(
-                                                                            value
-                                                                        ),
-                                                                        name:
-                                                                            categories.find(
-                                                                                (
-                                                                                    c
-                                                                                ) =>
-                                                                                    c.id ===
-                                                                                    parseInt(
-                                                                                        value
-                                                                                    )
-                                                                            )
-                                                                                ?.name ||
-                                                                            "",
-                                                                    },
-                                                                })
-                                                            }
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="grid grid-cols-4 items-center gap-4">
-                                                    <Label
-                                                        htmlFor="name"
-                                                        className="text-right"
-                                                    >
-                                                        Type Name
-                                                    </Label>
-                                                    <Input
-                                                        id="name"
-                                                        value={newType.name}
-                                                        onChange={(e) =>
-                                                            setNewType({
-                                                                ...newType,
-                                                                name: e.target
-                                                                    .value,
-                                                            })
-                                                        }
-                                                        className="col-span-3"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <DialogFooter>
-                                                <Button type="submit">
-                                                    Add Type
-                                                </Button>
-                                            </DialogFooter>
-                                        </form>
-                                    </DialogContent>
-                                </Dialog>
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Add Type
+                                </Button>
                             </div>
                         </CardHeader>
                         <CardContent>

@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
+    public function create()
+    {
+        return Inertia::render('Categories/Create');
+    }
     public function index()
     {
         $user = Auth::user();

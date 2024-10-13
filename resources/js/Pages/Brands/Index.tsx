@@ -71,30 +71,6 @@ export default function BrandManagement({ initialBrands, userStatus }: Props) {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10; // You can adjust this number as needed
 
-    const handleAddBrand = () => {
-        if (newBrand.name) {
-            router.post("/brands", newBrand, {
-                onSuccess: () => {
-                    setNewBrand({ name: "", description: "" });
-                    setIsAddDialogOpen(false);
-                    router.reload();
-                    toast({
-                        title: "Brand added successfully",
-                        variant: "default",
-                    });
-                },
-                onError: (errors) => {
-                    console.error("Error adding category: ", errors);
-                    toast({
-                        title: "Error adding brand",
-                        variant: "destructive",
-                    });
-                },
-            });
-            // setBrands([...brands, { id: Date.now(), ...newBrand }]);
-        }
-    };
-
     const handleEditBrand = () => {
         if (editingBrand && editingBrand.name && editingBrand.description) {
             setBrands(
@@ -200,80 +176,14 @@ export default function BrandManagement({ initialBrands, userStatus }: Props) {
                                         }
                                     />
                                 </div>
-                                <Dialog
-                                    open={isAddDialogOpen}
-                                    onOpenChange={setIsAddDialogOpen}
+                                <Button
+                                    onClick={() =>
+                                        router.visit("/brands/create")
+                                    }
                                 >
-                                    <DialogTrigger asChild>
-                                        <Button>
-                                            <Plus className="mr-2 h-4 w-4" />
-                                            Add Brand
-                                        </Button>
-                                    </DialogTrigger>
-                                    <DialogContent>
-                                        <form onSubmit={handleAddBrand}>
-                                            <DialogHeader>
-                                                <DialogTitle>
-                                                    Add New Brand
-                                                </DialogTitle>
-                                                <DialogDescription>
-                                                    Enter the details for the
-                                                    new brand.
-                                                </DialogDescription>
-                                            </DialogHeader>
-                                            <div className="grid gap-4 py-4">
-                                                <div className="grid grid-cols-4 items-center gap-4">
-                                                    <Label
-                                                        htmlFor="name"
-                                                        className="text-right"
-                                                    >
-                                                        Name
-                                                    </Label>
-                                                    <Input
-                                                        id="name"
-                                                        value={newBrand.name}
-                                                        onChange={(e) =>
-                                                            setNewBrand({
-                                                                ...newBrand,
-                                                                name: e.target
-                                                                    .value,
-                                                            })
-                                                        }
-                                                        className="col-span-3"
-                                                    />
-                                                </div>
-                                                <div className="grid grid-cols-4 items-center gap-4">
-                                                    <Label
-                                                        htmlFor="description"
-                                                        className="text-right"
-                                                    >
-                                                        Description
-                                                    </Label>
-                                                    <Textarea
-                                                        id="description"
-                                                        value={
-                                                            newBrand.description
-                                                        }
-                                                        onChange={(e) =>
-                                                            setNewBrand({
-                                                                ...newBrand,
-                                                                description:
-                                                                    e.target
-                                                                        .value,
-                                                            })
-                                                        }
-                                                        className="col-span-3"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <DialogFooter>
-                                                <Button type="submit">
-                                                    Add Brand
-                                                </Button>
-                                            </DialogFooter>
-                                        </form>
-                                    </DialogContent>
-                                </Dialog>
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Add Brand
+                                </Button>
                             </div>
                         </CardHeader>
                         <CardContent>

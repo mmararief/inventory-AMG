@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 class BrandController extends Controller
 {
 
+
     public function index()
     {
         $retail_id = Auth::user()->retail_id;
@@ -26,7 +27,7 @@ class BrandController extends Controller
 
     public function create()
     {
-        return Inertia::render('Brands/Index');
+        return Inertia::render('Brands/Create');
     }
 
     public function store(Request $request)

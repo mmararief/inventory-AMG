@@ -176,11 +176,14 @@ export default function ProductManagement({
                                         }
                                     />
                                 </div>
-                                <AddProductModal
-                                    initialCategories={initialCategories}
-                                    initialBrands={initialBrands}
-                                    initialTypes={initialTypes}
-                                />
+                                <Button
+                                    onClick={() =>
+                                        router.visit("/products/create")
+                                    }
+                                >
+                                    <Plus className="h-4 w-4" />
+                                    Add Product
+                                </Button>
                             </div>
                         </CardHeader>
                         <CardContent>

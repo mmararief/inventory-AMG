@@ -8,6 +8,7 @@ interface ComboboxProps {
     onSelect: (value: string) => void;
     className?: string;
     disabled?: boolean;
+    required?: boolean;
 }
 
 export const Combobox: React.FC<ComboboxProps> = ({
@@ -16,6 +17,7 @@ export const Combobox: React.FC<ComboboxProps> = ({
     onSelect,
     className,
     disabled,
+    required,
 }) => {
     const [selected, setSelected] = useState(items[0]);
     const [query, setQuery] = useState("");

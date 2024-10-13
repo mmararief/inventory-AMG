@@ -77,37 +77,6 @@ export default function CategoryManagement({
         null
     );
 
-    // Handle adding a new category
-    const handleAddCategory = () => {
-        if (data.name) {
-            // Add the new category to the state
-            router.post(
-                "/categories",
-                {
-                    name: data.name,
-                    description: data.description,
-                },
-                {
-                    onSuccess: () => {
-                        setData({ name: "", description: "" });
-                        toast({
-                            title: "Category added successfully",
-                            variant: "default",
-                        });
-                        setIsAddDialogOpen(false);
-                    },
-                    onError: (errors) => {
-                        console.error("Error adding category: ", errors);
-                        toast({
-                            title: "Error adding category",
-                            variant: "destructive",
-                        });
-                    },
-                }
-            );
-        }
-    };
-
     const handleEditCategory = () => {
         if (editingCategory && editingCategory.name) {
             setCategories(
@@ -189,72 +158,14 @@ export default function CategoryManagement({
                                 open={isAddDialogOpen}
                                 onOpenChange={setIsAddDialogOpen}
                             >
-                                <DialogTrigger asChild>
-                                    <Button>
-                                        <Plus className="mr-2 h-4 w-4" />
-                                        Add Category
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <form onSubmit={handleAddCategory}>
-                                        <DialogHeader>
-                                            <DialogTitle>
-                                                Add New Category
-                                            </DialogTitle>
-                                            <DialogDescription>
-                                                Enter the details for the new
-                                                category.
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                        <div className="grid gap-4 py-4">
-                                            <div className="grid grid-cols-4 items-center gap-4">
-                                                <Label
-                                                    htmlFor="name"
-                                                    className="text-right"
-                                                >
-                                                    Name
-                                                </Label>
-                                                <Input
-                                                    id="name"
-                                                    value={data.name}
-                                                    onChange={(e) =>
-                                                        setData({
-                                                            ...data,
-                                                            name: e.target
-                                                                .value,
-                                                        })
-                                                    }
-                                                    className="col-span-3"
-                                                />
-                                            </div>
-                                            <div className="grid grid-cols-4 items-center gap-4">
-                                                <Label
-                                                    htmlFor="description"
-                                                    className="text-right"
-                                                >
-                                                    Description
-                                                </Label>
-                                                <Input
-                                                    id="description"
-                                                    value={data.description}
-                                                    onChange={(e) =>
-                                                        setData({
-                                                            ...data,
-                                                            description:
-                                                                e.target.value,
-                                                        })
-                                                    }
-                                                    className="col-span-3"
-                                                />
-                                            </div>
-                                        </div>
-                                        <DialogFooter>
-                                            <Button type="submit">
-                                                Add Category
-                                            </Button>
-                                        </DialogFooter>
-                                    </form>
-                                </DialogContent>
+                                <Button
+                                    onClick={() =>
+                                        router.visit("/categories/create")
+                                    }
+                                >
+                                    <Plus className="h-4 w-4" />
+                                    Add Category
+                                </Button>
                             </Dialog>
                         </CardHeader>
                         <CardContent>

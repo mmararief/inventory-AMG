@@ -88,33 +88,6 @@ export default function StorageLocationManagement({
         setCurrentPage(page);
     };
 
-    const handleAddLocation = () => {
-        if (newLocation.name) {
-            setLocations([...locations, { id: Date.now(), ...newLocation }]);
-            router.post("/locations", newLocation, {
-                onSuccess: () => {
-                    setNewLocation({
-                        name: "",
-                        description: "",
-                        volume: 0,
-                        remaining_volume: 0,
-                        used_volume: 0,
-                    });
-                    setIsAddDialogOpen(false);
-                    router.reload({ only: ["locations"] });
-                },
-            });
-            setNewLocation({
-                name: "",
-                description: "",
-                volume: 0,
-                remaining_volume: 0,
-                used_volume: 0,
-            });
-            setIsAddDialogOpen(false);
-        }
-    };
-
     const handleEditLocation = () => {
         if (editingLocation && editingLocation.name && editingLocation.volume) {
             setLocations(
@@ -173,102 +146,12 @@ export default function StorageLocationManagement({
                             <CardTitle className="text-2xl font-bold">
                                 Storage Location Management
                             </CardTitle>
-                            <Dialog
-                                open={isAddDialogOpen}
-                                onOpenChange={setIsAddDialogOpen}
+                            <Button
+                                onClick={() => router.get("/locations/create")}
                             >
-                                <DialogTrigger asChild>
-                                    <Button>
-                                        <Plus className="mr-2 h-4 w-4" />
-                                        Add Location
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <form onSubmit={handleAddLocation}>
-                                        <DialogHeader>
-                                            <DialogTitle>
-                                                Add New Storage Location
-                                            </DialogTitle>
-                                            <DialogDescription>
-                                                Enter the details for the new
-                                                storage location.
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                        <div className="grid gap-4 py-4">
-                                            <div className="grid grid-cols-4 items-center gap-4">
-                                                <Label
-                                                    htmlFor="name"
-                                                    className="text-right"
-                                                >
-                                                    Name
-                                                </Label>
-                                                <Input
-                                                    id="name"
-                                                    value={newLocation.name}
-                                                    onChange={(e) =>
-                                                        setNewLocation({
-                                                            ...newLocation,
-                                                            name: e.target
-                                                                .value,
-                                                        })
-                                                    }
-                                                    className="col-span-3"
-                                                />
-                                            </div>
-                                            <div className="grid grid-cols-4 items-center gap-4">
-                                                <Label
-                                                    htmlFor="type"
-                                                    className="text-right"
-                                                >
-                                                    Description
-                                                </Label>
-                                                <Input
-                                                    id="description"
-                                                    value={
-                                                        newLocation.description
-                                                    }
-                                                    onChange={(e) =>
-                                                        setNewLocation({
-                                                            ...newLocation,
-                                                            description:
-                                                                e.target.value,
-                                                        })
-                                                    }
-                                                    className="col-span-3"
-                                                />
-                                            </div>
-                                            <div className="grid grid-cols-4 items-center gap-4">
-                                                <Label
-                                                    htmlFor="volume"
-                                                    className="text-right"
-                                                >
-                                                    Volume
-                                                </Label>
-                                                <Input
-                                                    id="volume"
-                                                    type="number"
-                                                    value={newLocation.volume}
-                                                    onChange={(e) =>
-                                                        setNewLocation({
-                                                            ...newLocation,
-                                                            volume: parseInt(
-                                                                e.target.value,
-                                                                10
-                                                            ),
-                                                        })
-                                                    }
-                                                    className="col-span-3"
-                                                />
-                                            </div>
-                                        </div>
-                                        <DialogFooter>
-                                            <Button type="submit">
-                                                Add Location
-                                            </Button>
-                                        </DialogFooter>
-                                    </form>
-                                </DialogContent>
-                            </Dialog>
+                                <Plus className="mr-2 h-4 w-4" />
+                                Add Location
+                            </Button>
                         </CardHeader>
                         <CardContent>
                             <Table>
