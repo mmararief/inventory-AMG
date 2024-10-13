@@ -118,6 +118,7 @@ export default function ProductManagement({
     };
 
     const handleDeleteProduct = () => {
+        setIsDeleteDialogOpen(false);
         if (productToDelete) {
             router.delete(`/products/${productToDelete.id}`, {
                 preserveState: true,

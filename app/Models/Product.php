@@ -29,4 +29,9 @@ class Product extends Model
     {
         return $this->belongsTo(Type::class);
     }
+
+    public function movements()
+    {
+        return $this->hasMany(Movements::class);
+    }
 }

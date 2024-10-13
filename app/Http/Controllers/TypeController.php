@@ -30,8 +30,24 @@ class TypeController extends Controller
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
         ]);
-        Type::create(array_merge($validatedData, ['retail_id' => Auth::user()?->retail_id]));
-        return redirect()->route('type.index');
+
+        $type = Type::create(array_merge($validatedData, ['retail_id' => Auth::user()?->retail_id]));
+
+        return redirect()->route('type.index')
+            ->with('success', 'Type created successfully')
+            ->with('newTypeId', $type->id);
+    }
+
+    public function update(Request $request, Type $type)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+        ]);
+
+        $type->update($validatedData);
+
+        return redirect()->route('type.index')->with('success', 'Type updated successfully');
     }
 
     public function destroy(Type $type)

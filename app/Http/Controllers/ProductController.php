@@ -11,13 +11,15 @@ use App\Models\Type;
 use Illuminate\Contracts\Support\ValidatedData;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class ProductController extends Controller
 {
     //
     public function index(Request $request)
     {
-        $userStatus = Auth::user()->status;
+        $userStatus = Auth::user()->retail->status;
         $query = Product::query()
             ->with(['category', 'brand', 'type'])
             ->where('retail_id', Auth::user()?->retail_id);
@@ -75,13 +77,38 @@ class ProductController extends Controller
 
 
 
-        return redirect()->route('product.index');
+        // Fetch the updated list of products
+        $products = Product::with(['category', 'brand', 'type'])
+            ->where('retail_id', Auth::user()?->retail_id)
+            ->paginate(10);
+
+        return Inertia::render('Products/Index', [
+            'initialProducts' => $products,
+        ]);
     }
 
     public function destroy(Product $product)
     {
-        $product->delete();
-        return redirect()->route('product.index');
+        try {
+            DB::beginTransaction();
+
+            // Delete related stock movements
+            $product->movements()->delete();
+            $product->inventories()->delete();
+
+
+            // Delete the product
+            $product->delete();
+
+            DB::commit();
+
+            return redirect()->route('product.index')->with('success', 'Product and related data deleted successfully');
+        } catch (QueryException $e) {
+            DB::rollBack();
+            // Log the error
+
+            return redirect()->route('product.index')->with('error', 'An error occurred while deleting the product. Please try again.');
+        }
     }
 
     public function update(Request $request, Product $product)

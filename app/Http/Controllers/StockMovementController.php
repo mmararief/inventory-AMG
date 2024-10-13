@@ -23,11 +23,15 @@ class StockMovementController extends Controller
             $query->whereBetween('created_at', [$request->start_date, $request->end_date]);
         }
 
+        if ($request->has('type') && $request->type !== 'all') {
+            $query->where('type', $request->type);
+        }
+
         $movements = $query->orderBy('created_at', 'desc')->paginate(10);
 
         return Inertia::render('StockMovements/Index', [
             'initialStockMovements' => $movements,
-            'filters' => $request->only(['start_date', 'end_date']),
+            'filters' => $request->only(['start_date', 'end_date', 'type']),
             'userStatus' => $userStatus
         ]);
     }

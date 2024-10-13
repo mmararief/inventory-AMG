@@ -9,6 +9,13 @@ import {
 import { Head } from "@inertiajs/react";
 import { Input } from "@/Components/ui/input";
 import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/Components/ui/select";
+import {
     Table,
     TableBody,
     TableCell,
@@ -57,6 +64,7 @@ interface Props {
     filters: {
         start_date: string | null;
         end_date: string | null;
+        type: string | null;
     };
     userStatus: string;
 }
@@ -106,11 +114,39 @@ export default function StockMovements({
         return undefined;
     });
 
+    const [selectedType, setSelectedType] = useState<string>(
+        filters.type || ""
+    );
+
+    console.log(initialStockMovements);
+
     useEffect(() => {
         setCurrentItems(initialStockMovements.data);
         setCurrentPage(initialStockMovements.current_page);
         setTotalPages(initialStockMovements.last_page);
     }, [initialStockMovements]);
+
+    const handleTypeChange = (value: string) => {
+        setSelectedType(value);
+        const formattedStartDate = dateRange?.from
+            ? format(dateRange.from, "yyyy-MM-dd")
+            : "";
+        const formattedEndDate = dateRange?.to
+            ? format(dateRange.to, "yyyy-MM-dd")
+            : "";
+        router.get(
+            `/stock-movements?type=${value}${
+                formattedStartDate && formattedEndDate
+                    ? `&start_date=${formattedStartDate}&end_date=${formattedEndDate}`
+                    : ""
+            }`,
+            {},
+            {
+                preserveState: true,
+                preserveScroll: true,
+            }
+        );
+    };
 
     const handlePageChange = (page: number) => {
         const formattedStartDate = dateRange?.from
@@ -120,7 +156,9 @@ export default function StockMovements({
             ? format(dateRange.to, "yyyy-MM-dd")
             : "";
         router.get(
-            `/stock-movements?page=${page} ${
+            `/stock-movements?page=${page}${
+                selectedType !== "" ? `&type=${selectedType}` : ""
+            }${
                 formattedStartDate && formattedEndDate
                     ? `&start_date=${formattedStartDate}&end_date=${formattedEndDate}`
                     : ""
@@ -139,7 +177,9 @@ export default function StockMovements({
             const formattedStartDate = format(newDateRange.from, "yyyy-MM-dd");
             const formattedEndDate = format(newDateRange.to, "yyyy-MM-dd");
             router.get(
-                `/stock-movements?start_date=${formattedStartDate}&end_date=${formattedEndDate}`,
+                `/stock-movements?start_date=${formattedStartDate}&end_date=${formattedEndDate}${
+                    selectedType ? `&type=${selectedType}` : ""
+                }`,
                 {},
                 {
                     preserveState: true,
@@ -162,6 +202,23 @@ export default function StockMovements({
                                 Stock Movements
                             </CardTitle>
                             <div className="flex items-center space-x-2">
+                                <Select
+                                    value={selectedType}
+                                    onValueChange={handleTypeChange}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a Type" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All</SelectItem>
+                                        <SelectItem value="in">In</SelectItem>
+                                        <SelectItem value="out">Out</SelectItem>
+                                        <SelectItem value="move">
+                                            Move
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+
                                 <Popover>
                                     <PopoverTrigger asChild>
                                         <Button

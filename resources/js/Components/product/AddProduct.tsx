@@ -17,20 +17,6 @@ import { router } from "@inertiajs/react";
 import { Combobox } from "@/Components/ui/Combobox";
 import { Plus, Check, ChevronsUpDown } from "lucide-react";
 import { formatToIDR } from "@/lib/rupiahFormat";
-import { cn } from "@/lib/utils";
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/Components/ui/command";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/Components/ui/popover";
 
 interface Props {
     initialCategories: Category[];
@@ -71,10 +57,54 @@ const AddProductModal = ({
         },
     });
 
-    const [openCategory, setOpenCategory] = useState(false);
-    const [openType, setOpenType] = useState(false);
-    const [openBrand, setOpenBrand] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState<string>("");
+    const [filteredTypes, setFilteredTypes] = useState<Type[]>([]);
+
+    // Add this debugging log
+    useEffect(() => {
+        console.log("Initial data:", {
+            categories: initialCategories,
+            brands: initialBrands,
+            types: initialTypes,
+        });
+    }, [initialCategories, initialBrands, initialTypes]);
+
+    useEffect(() => {
+        if (newProduct.price) {
+            setDisplayPrice(formatToIDR(newProduct.price));
+        }
+    }, [newProduct.price]);
+
+    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.replace(/[^0-9]/g, "");
+        const numericValue = parseInt(value, 10);
+
+        if (!isNaN(numericValue)) {
+            setNewProduct({
+                ...newProduct,
+                price: numericValue,
+            });
+        } else {
+            setNewProduct({
+                ...newProduct,
+                price: 0,
+            });
+        }
+    };
+
+    useEffect(() => {
+        if (newProduct.category_id) {
+            const filtered = initialTypes.filter(
+                (type) =>
+                    String(type.category_id) === String(newProduct.category_id)
+            );
+            console.log("Category selected:", newProduct.category_id);
+            console.log("All types:", initialTypes);
+            console.log("Filtered types:", filtered);
+            setFilteredTypes(filtered);
+        } else {
+            setFilteredTypes(initialTypes);
+        }
+    }, [newProduct.category_id, initialTypes]);
 
     const handleAddProduct = () => {
         if (newProduct.name && newProduct.type && newProduct.price > 0) {
@@ -121,7 +151,7 @@ const AddProductModal = ({
                         });
                         setIsAddDialogOpen(false);
 
-                        router.reload({ only: ["products"] });
+                        router.reload({ only: ["initialProducts"] });
                     },
                     onError: (errors) => {
                         console.error("Error adding product: ", errors);
@@ -130,32 +160,6 @@ const AddProductModal = ({
             );
         }
     };
-    useEffect(() => {
-        if (newProduct.price) {
-            setDisplayPrice(formatToIDR(newProduct.price));
-        }
-    }, [newProduct.price]);
-
-    const handlePriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value.replace(/[^0-9]/g, "");
-        const numericValue = parseInt(value, 10);
-
-        if (!isNaN(numericValue)) {
-            setNewProduct({
-                ...newProduct,
-                price: numericValue,
-            });
-        } else {
-            setNewProduct({
-                ...newProduct,
-                price: 0,
-            });
-        }
-    };
-
-    const filteredTypes = initialTypes.filter(
-        (type) => type.category_id === newProduct.category_id
-    );
 
     return (
         <div>
@@ -247,12 +251,17 @@ const AddProductModal = ({
                                             })
                                         )}
                                         placeholder="Select Category"
-                                        onSelect={(value) =>
+                                        onSelect={(value) => {
+                                            const categoryId = parseInt(value);
+                                            console.log(
+                                                "Selected category ID:",
+                                                categoryId
+                                            );
                                             setNewProduct({
                                                 ...newProduct,
-                                                category_id: parseInt(value),
-                                            })
-                                        }
+                                                category_id: categoryId,
+                                            });
+                                        }}
                                     />
                                 </div>
                             </div>

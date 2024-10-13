@@ -3,7 +3,7 @@ import { Plus, Pencil, Trash2, Search, Filter } from "lucide-react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
-import { router } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import {
     Table,
     TableBody,
@@ -90,7 +90,6 @@ export default function TypeManagement({
                 name: newType.name,
                 category_id: newType.category.id,
             });
-            console.log(newType);
 
             setTypes([...types, { id: Date.now(), ...newType }]);
             setNewType({
@@ -112,6 +111,10 @@ export default function TypeManagement({
                     type.id === editingType.id ? editingType : type
                 )
             );
+            router.put(`/types/${editingType.id}`, {
+                name: editingType.name,
+                category_id: editingType.category.id,
+            });
             setEditingType(null);
             setIsEditDialogOpen(false);
             toast({
@@ -149,6 +152,7 @@ export default function TypeManagement({
 
     return (
         <AuthenticatedLayout>
+            <Head title="Type Management" />
             {userStatus === "inactive" ? (
                 <SubscriptionPage />
             ) : (
@@ -209,73 +213,86 @@ export default function TypeManagement({
                                         </Button>
                                     </DialogTrigger>
                                     <DialogContent>
-                                        <DialogHeader>
-                                            <DialogTitle>
-                                                Add New Product Type
-                                            </DialogTitle>
-                                            <DialogDescription>
-                                                Enter the details for the new
-                                                product type.
-                                            </DialogDescription>
-                                        </DialogHeader>
-                                        <div className="grid gap-4 py-4">
-                                            <div className="grid grid-cols-4 items-center gap-4">
-                                                <Label
-                                                    htmlFor="category"
-                                                    className="text-right"
-                                                >
-                                                    Category
-                                                </Label>
-                                                <div className="col-span-3">
-                                                    <Combobox
-                                                        className="w-full"
-                                                        items={categories.map(
-                                                            (category) => ({
-                                                                value: category.id.toString(),
-                                                                label: category.name,
-                                                            })
-                                                        )}
-                                                        placeholder="Select a category"
-                                                        onSelect={(value) =>
+                                        <form onSubmit={handleAddType}>
+                                            <DialogHeader>
+                                                <DialogTitle>
+                                                    Add New Product Type
+                                                </DialogTitle>
+                                                <DialogDescription>
+                                                    Enter the details for the
+                                                    new product type.
+                                                </DialogDescription>
+                                            </DialogHeader>
+                                            <div className="grid gap-4 py-4">
+                                                <div className="grid grid-cols-4 items-center gap-4">
+                                                    <Label
+                                                        htmlFor="category"
+                                                        className="text-right"
+                                                    >
+                                                        Category
+                                                    </Label>
+                                                    <div className="col-span-3">
+                                                        <Combobox
+                                                            className="w-full"
+                                                            items={categories.map(
+                                                                (category) => ({
+                                                                    value: category.id.toString(),
+                                                                    label: category.name,
+                                                                })
+                                                            )}
+                                                            placeholder="Select a category"
+                                                            onSelect={(value) =>
+                                                                setNewType({
+                                                                    ...newType,
+                                                                    category: {
+                                                                        id: parseInt(
+                                                                            value
+                                                                        ),
+                                                                        name:
+                                                                            categories.find(
+                                                                                (
+                                                                                    c
+                                                                                ) =>
+                                                                                    c.id ===
+                                                                                    parseInt(
+                                                                                        value
+                                                                                    )
+                                                                            )
+                                                                                ?.name ||
+                                                                            "",
+                                                                    },
+                                                                })
+                                                            }
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-4 items-center gap-4">
+                                                    <Label
+                                                        htmlFor="name"
+                                                        className="text-right"
+                                                    >
+                                                        Type Name
+                                                    </Label>
+                                                    <Input
+                                                        id="name"
+                                                        value={newType.name}
+                                                        onChange={(e) =>
                                                             setNewType({
                                                                 ...newType,
-                                                                category: {
-                                                                    id: parseInt(
-                                                                        value
-                                                                    ),
-                                                                    name: "",
-                                                                },
+                                                                name: e.target
+                                                                    .value,
                                                             })
                                                         }
+                                                        className="col-span-3"
                                                     />
                                                 </div>
                                             </div>
-                                            <div className="grid grid-cols-4 items-center gap-4">
-                                                <Label
-                                                    htmlFor="name"
-                                                    className="text-right"
-                                                >
-                                                    Type Name
-                                                </Label>
-                                                <Input
-                                                    id="name"
-                                                    value={newType.name}
-                                                    onChange={(e) =>
-                                                        setNewType({
-                                                            ...newType,
-                                                            name: e.target
-                                                                .value,
-                                                        })
-                                                    }
-                                                    className="col-span-3"
-                                                />
-                                            </div>
-                                        </div>
-                                        <DialogFooter>
-                                            <Button onClick={handleAddType}>
-                                                Add Type
-                                            </Button>
-                                        </DialogFooter>
+                                            <DialogFooter>
+                                                <Button type="submit">
+                                                    Add Type
+                                                </Button>
+                                            </DialogFooter>
+                                        </form>
                                     </DialogContent>
                                 </Dialog>
                             </div>

@@ -466,6 +466,22 @@ export default function EnhancedAdminDashboard({
                                                         <Users className="mr-2 h-4 w-4" />
                                                         Toggle Status
                                                     </DropdownMenuItem>
+
+                                                    {account.google_maps_link && (
+                                                        <a
+                                                            href={
+                                                                account.google_maps_link
+                                                            }
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                        >
+                                                            <DropdownMenuItem>
+                                                                <MapPin className="mr-2 h-4 w-4" />
+                                                                Google Maps
+                                                            </DropdownMenuItem>
+                                                        </a>
+                                                    )}
+
                                                     <DropdownMenuSeparator />
                                                     <DropdownMenuItem
                                                         onClick={() => {
