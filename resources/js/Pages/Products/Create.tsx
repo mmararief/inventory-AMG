@@ -57,7 +57,7 @@ export default function AddProduct({
     useEffect(() => {
         if (categoryId) {
             const filtered = initialTypes.filter(
-                (type) => type.category_id === categoryId
+                (type) => String(type.category_id) === String(categoryId)
             );
             setFilteredTypes(filtered);
         } else {
