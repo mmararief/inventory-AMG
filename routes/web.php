@@ -93,6 +93,8 @@ Route::middleware('auth')->group(function () {
 
 
     Route::get('/stock-movements', [StockMovementController::class, 'index'])->name('stock-movements.index');
+    Route::get('/stock-movements/download', [StockMovementController::class, 'download'])->name('stock-movements.download');
+    Route::get('/stock-movements/print-pdf', [StockMovementController::class, 'printPdf'])->name('stock-movements.print-pdf');
 });
 
 

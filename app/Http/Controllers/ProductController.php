@@ -43,7 +43,8 @@ class ProductController extends Controller
 
         // Apply filters
         if ($request->has('search') && $request->search !== '') {
-            $query->where('name', 'like', '%' . $request->search . '%');
+            $query->where('name', 'like', '%' . $request->search . '%')
+                ->orWhere('product_code', 'like', '%' . $request->search . '%');
         }
 
 

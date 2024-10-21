@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { useState } from "react";
 import { Plus, Pencil, Trash2, Search, Filter } from "lucide-react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
@@ -20,22 +20,16 @@ import {
 } from "@/Components/ui/dialog";
 import { Inventory, Category, Location } from "@/types/types";
 
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/Components/ui/select";
-
 export const UpdateInventory = ({
     item,
     locations,
     setInventory,
+    children,
 }: {
     item: Inventory;
     locations: Location[];
     setInventory: React.Dispatch<React.SetStateAction<Inventory[]>>;
+    children: ReactNode;
 }) => {
     const [editingItem, setEditingItem] = useState<Inventory | null>(null);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -60,11 +54,11 @@ export const UpdateInventory = ({
             <DialogTrigger asChild>
                 <Button
                     variant="ghost"
-                    size="icon"
                     onClick={() => setEditingItem(item)}
+                    className="w-full"
                 >
-                    <Pencil className="h-4 w-4" />
-                    <span className="sr-only">Edit {item.product.name}</span>
+                    <Pencil className="h-6 w-6 mr-2" />
+                    {children}
                 </Button>
             </DialogTrigger>
             <DialogContent>

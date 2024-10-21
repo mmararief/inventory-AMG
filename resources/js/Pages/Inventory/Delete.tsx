@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import { Trash2 } from "lucide-react";
 
 import { Button } from "@/Components/ui/button";
@@ -20,10 +20,12 @@ const DeleteInventory = ({
     item,
     inventory,
     setInventory,
+    children,
 }: {
     item: Inventory;
     setInventory: React.Dispatch<React.SetStateAction<Inventory[]>>;
     inventory: Inventory[];
+    children: ReactNode;
 }) => {
     const [itemToDelete, setItemToDelete] = useState<Inventory | null>(null);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -42,12 +44,12 @@ const DeleteInventory = ({
         <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
             <DialogTrigger asChild>
                 <Button
+                    className="w-full"
                     variant="ghost"
-                    size="icon"
                     onClick={() => setItemToDelete(item)}
                 >
-                    <Trash2 className="h-4 w-4" />
-                    <span className="sr-only">Delete {item.product.name}</span>
+                    <Trash2 className="h-6 w-6 mr-2" />
+                    {children}
                 </Button>
             </DialogTrigger>
             <DialogContent>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { useState } from "react";
 import { ArrowDownCircle } from "lucide-react";
 import { Button } from "@/Components/ui/button";
@@ -29,11 +29,13 @@ import {
 export const StockOutInventory = ({
     item,
     locations,
+    children,
     setInventory,
 }: {
     item: Inventory;
     locations: Location[];
     setInventory: React.Dispatch<React.SetStateAction<Inventory[]>>;
+    children: ReactNode;
 }) => {
     const [stockOutItem, setStockOutItem] = useState<Inventory | null>(null);
     const [stockOutQuantity, setStockOutQuantity] = useState<number>(0);
@@ -72,17 +74,15 @@ export const StockOutInventory = ({
         >
             <DialogTrigger asChild>
                 <Button
+                    className="w-full"
                     variant="ghost"
-                    size="icon"
                     onClick={() => {
                         setStockOutItem(item);
                         setStockOutQuantity(0);
                     }}
                 >
-                    <ArrowDownCircle className="h-4 w-4" />
-                    <span className="sr-only">
-                        Stock Out {item.product.name}
-                    </span>
+                    <ArrowDownCircle className="h-6 w-6 mr-2" />
+                    {children}
                 </Button>
             </DialogTrigger>
             <DialogContent>

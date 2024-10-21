@@ -5,9 +5,11 @@ import {
     ArrowDownCircle,
     ArrowLeftRight,
     CalendarIcon,
+    Download,
+    Printer,
 } from "lucide-react";
 import { Head } from "@inertiajs/react";
-import { Input } from "@/Components/ui/input";
+
 import {
     Select,
     SelectContent,
@@ -189,6 +191,45 @@ export default function StockMovements({
         }
     };
 
+    const handleDownloadExcel = () => {
+        const formattedStartDate = dateRange?.from
+            ? format(dateRange.from, "yyyy-MM-dd")
+            : "";
+        const formattedEndDate = dateRange?.to
+            ? format(dateRange.to, "yyyy-MM-dd")
+            : "";
+
+        const url = `/stock-movements/download?${
+            selectedType !== "" ? `type=${selectedType}&` : ""
+        }${
+            formattedStartDate && formattedEndDate
+                ? `start_date=${formattedStartDate}&end_date=${formattedEndDate}`
+                : ""
+        }`;
+
+        window.location.href = url;
+    };
+
+    const handlePrintPdf = () => {
+        const formattedStartDate = dateRange?.from
+            ? format(dateRange.from, "yyyy-MM-dd")
+            : "";
+        const formattedEndDate = dateRange?.to
+            ? format(dateRange.to, "yyyy-MM-dd")
+            : "";
+
+        const url = `/stock-movements/print-pdf?${
+            selectedType !== "" ? `type=${selectedType}&` : ""
+        }${
+            formattedStartDate && formattedEndDate
+                ? `start_date=${formattedStartDate}&end_date=${formattedEndDate}`
+                : ""
+        }`;
+
+        // Buka URL dalam tab baru
+        window.open(url, "_blank");
+    };
+
     return (
         <AuthenticatedLayout>
             <Head title="Stock Movements" />
@@ -264,6 +305,21 @@ export default function StockMovements({
                                         />
                                     </PopoverContent>
                                 </Popover>
+
+                                <Button
+                                    variant="outline"
+                                    onClick={handleDownloadExcel}
+                                >
+                                    <Download className="mr-2 h-4 w-4" />
+                                    Download Excel
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    onClick={handlePrintPdf}
+                                >
+                                    <Printer className="mr-2 h-4 w-4" />
+                                    Print PDF
+                                </Button>
                             </div>
                         </CardHeader>
                         <CardContent>

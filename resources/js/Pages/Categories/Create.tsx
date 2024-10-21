@@ -60,7 +60,6 @@ export default function AddCategory() {
                                 placeholder="Enter description"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                required
                             />
                         </div>
                     </CardContent>

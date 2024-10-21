@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { useState } from "react";
 import { ArrowUpCircle } from "lucide-react";
 import { Button } from "@/Components/ui/button";
@@ -30,10 +30,12 @@ export const StockInInventory = ({
     item,
     locations,
     setInventory,
+    children,
 }: {
     item: Inventory;
     locations: Location[];
     setInventory: React.Dispatch<React.SetStateAction<Inventory[]>>;
+    children: ReactNode;
 }) => {
     const [stockInItem, setStockInItem] = useState<Inventory | null>(null);
     const [isStockInDialogOpen, setIsStockInDialogOpen] = useState(false);
@@ -65,14 +67,12 @@ export const StockInInventory = ({
         >
             <DialogTrigger asChild>
                 <Button
+                    className="w-full"
                     variant="ghost"
-                    size="icon"
                     onClick={() => setStockInItem(item)}
                 >
-                    <ArrowUpCircle className="h-4 w-4" />
-                    <span className="sr-only">
-                        Stock In {item.product.name}
-                    </span>
+                    <ArrowUpCircle className="h-6 w-6 mr-2" />
+                    {children}
                 </Button>
             </DialogTrigger>
             <DialogContent>

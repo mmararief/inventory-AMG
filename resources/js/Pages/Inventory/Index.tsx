@@ -1,6 +1,13 @@
 import { useState } from "react";
 import { Head } from "@inertiajs/react";
-import { Plus, Pencil, Trash2, Search, Filter } from "lucide-react";
+import {
+    Plus,
+    Pencil,
+    Trash2,
+    Search,
+    Filter,
+    MoreHorizontal,
+} from "lucide-react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Button } from "@/Components/ui/button";
 import { Input } from "@/Components/ui/input";
@@ -16,18 +23,20 @@ import {
     TableHeader,
     TableRow,
 } from "@/Components/ui/table";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/Components/ui/dropdown-menu";
 import { Card, CardContent, CardHeader, CardTitle } from "@/Components/ui/card";
-
+import { Combobox } from "@/Components/ui/Combobox";
 import { Inventory, Category, Location } from "@/types/types";
 import { formatToIDR } from "@/lib/rupiahFormat";
 
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/Components/ui/select";
+import BarcodeButton from "@/Components/ui/BarcodeButton";
 import { UpdateInventory } from "./Update";
 import {
     Popover,
@@ -83,6 +92,8 @@ export default function InventoryManagement({
     const [locationFilter, setLocationFilter] = useState(
         filters.location || "all"
     );
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
 
     const handleSearch = (value: string) => {
         setSearchTerm(value);
@@ -116,6 +127,11 @@ export default function InventoryManagement({
             page,
             preserveState: true,
         });
+    };
+
+    const handleItemClick = (e: Event) => {
+        e.preventDefault();
+        e.stopPropagation();
     };
 
     return (
@@ -156,73 +172,55 @@ export default function InventoryManagement({
                                                 <h4 className="font-medium leading-none">
                                                     Category
                                                 </h4>
-                                                <Select
-                                                    value={categoryFilter}
-                                                    onValueChange={
+                                                <Combobox
+                                                    items={[
+                                                        {
+                                                            value: "all",
+                                                            label: "All Categories",
+                                                        },
+                                                        ...categories.map(
+                                                            (category) => ({
+                                                                value: category.name,
+                                                                label: category.name,
+                                                            })
+                                                        ),
+                                                    ]}
+                                                    placeholder="Select a category"
+                                                    onSelect={
                                                         handleCategoryFilter
                                                     }
-                                                >
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select a category" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="all">
-                                                            All Categories
-                                                        </SelectItem>
-                                                        {categories.map(
-                                                            (category) => (
-                                                                <SelectItem
-                                                                    key={
-                                                                        category.id
-                                                                    }
-                                                                    value={
-                                                                        category.name
-                                                                    }
-                                                                >
-                                                                    {
-                                                                        category.name
-                                                                    }
-                                                                </SelectItem>
-                                                            )
-                                                        )}
-                                                    </SelectContent>
-                                                </Select>
+                                                    value={categoryFilter}
+                                                    onChange={(value) =>
+                                                        setCategoryFilter(value)
+                                                    }
+                                                />
                                             </div>
                                             <div className="space-y-2">
                                                 <h4 className="font-medium leading-none">
                                                     Location
                                                 </h4>
-                                                <Select
-                                                    value={locationFilter}
-                                                    onValueChange={
+                                                <Combobox
+                                                    items={[
+                                                        {
+                                                            value: "all",
+                                                            label: "All Locations",
+                                                        },
+                                                        ...locations.map(
+                                                            (location) => ({
+                                                                value: location.name,
+                                                                label: location.name,
+                                                            })
+                                                        ),
+                                                    ]}
+                                                    placeholder="Select a location"
+                                                    onSelect={
                                                         handleLocationFilter
                                                     }
-                                                >
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select a location" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectItem value="all">
-                                                            All Locations
-                                                        </SelectItem>
-                                                        {locations.map(
-                                                            (location) => (
-                                                                <SelectItem
-                                                                    key={
-                                                                        location.id
-                                                                    }
-                                                                    value={
-                                                                        location.name
-                                                                    }
-                                                                >
-                                                                    {
-                                                                        location.name
-                                                                    }
-                                                                </SelectItem>
-                                                            )
-                                                        )}
-                                                    </SelectContent>
-                                                </Select>
+                                                    value={locationFilter}
+                                                    onChange={(value) =>
+                                                        setLocationFilter(value)
+                                                    }
+                                                />
                                             </div>
                                         </div>
                                     </PopoverContent>
@@ -281,31 +279,146 @@ export default function InventoryManagement({
                                             </TableCell>
 
                                             <TableCell className="text-right">
-                                                <UpdateInventory
-                                                    item={item}
-                                                    locations={locations}
-                                                    setInventory={setInventory}
-                                                />
-                                                {/* Delete Dialog */}
-                                                <DeleteInventory
-                                                    item={item}
-                                                    setInventory={setInventory}
-                                                    inventory={inventory}
-                                                />
-                                                <StockInInventory
-                                                    item={item}
-                                                    locations={locations}
-                                                    setInventory={setInventory}
-                                                />
-                                                <StockOutInventory
-                                                    item={item}
-                                                    locations={locations}
-                                                    setInventory={setInventory}
-                                                />
-                                                <MoveStockInventory
-                                                    item={item}
-                                                    locations={locations}
-                                                    setInventory={setInventory}
+                                                <DropdownMenu
+                                                    open={
+                                                        openDropdownId ===
+                                                        item.id
+                                                    }
+                                                    onOpenChange={(open) => {
+                                                        setOpenDropdownId(
+                                                            open
+                                                                ? item.id
+                                                                : null
+                                                        );
+                                                    }}
+                                                >
+                                                    <DropdownMenuTrigger
+                                                        asChild
+                                                    >
+                                                        <Button
+                                                            variant="ghost"
+                                                            className="h-8 w-8 p-0"
+                                                        >
+                                                            <span className="sr-only">
+                                                                Open menu
+                                                            </span>
+                                                            <MoreHorizontal className="h-4 w-4" />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuLabel>
+                                                            Actions
+                                                        </DropdownMenuLabel>
+                                                        <DropdownMenuItem
+                                                            onSelect={
+                                                                handleItemClick
+                                                            }
+                                                        >
+                                                            <UpdateInventory
+                                                                item={item}
+                                                                locations={
+                                                                    locations
+                                                                }
+                                                                setInventory={
+                                                                    setInventory
+                                                                }
+                                                            >
+                                                                <div className="flex items-center w-full">
+                                                                    Edit
+                                                                </div>
+                                                            </UpdateInventory>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            onSelect={
+                                                                handleItemClick
+                                                            }
+                                                        >
+                                                            <DeleteInventory
+                                                                item={item}
+                                                                setInventory={
+                                                                    setInventory
+                                                                }
+                                                                inventory={
+                                                                    inventory
+                                                                }
+                                                            >
+                                                                <div className="flex items-center w-full">
+                                                                    Delete
+                                                                </div>
+                                                            </DeleteInventory>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem
+                                                            onSelect={
+                                                                handleItemClick
+                                                            }
+                                                        >
+                                                            <StockInInventory
+                                                                item={item}
+                                                                locations={
+                                                                    locations
+                                                                }
+                                                                setInventory={
+                                                                    setInventory
+                                                                }
+                                                            >
+                                                                <div className="flex items-center w-full">
+                                                                    Stock In
+                                                                </div>
+                                                            </StockInInventory>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            onSelect={
+                                                                handleItemClick
+                                                            }
+                                                        >
+                                                            <StockOutInventory
+                                                                item={item}
+                                                                locations={
+                                                                    locations
+                                                                }
+                                                                setInventory={
+                                                                    setInventory
+                                                                }
+                                                            >
+                                                                <div className="flex items-center w-full">
+                                                                    Stock Out
+                                                                </div>
+                                                            </StockOutInventory>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            onSelect={
+                                                                handleItemClick
+                                                            }
+                                                        >
+                                                            <MoveStockInventory
+                                                                item={item}
+                                                                locations={
+                                                                    locations
+                                                                }
+                                                                setInventory={
+                                                                    setInventory
+                                                                }
+                                                            >
+                                                                <div className="flex items-center w-full">
+                                                                    Move Stock
+                                                                </div>
+                                                            </MoveStockInventory>
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem
+                                                            onSelect={
+                                                                handleItemClick
+                                                            }
+                                                        ></DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+
+                                                <BarcodeButton
+                                                    productCode={
+                                                        item.product
+                                                            .product_code
+                                                    }
                                                 />
                                             </TableCell>
                                         </TableRow>

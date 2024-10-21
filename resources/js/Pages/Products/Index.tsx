@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Plus, Pencil, Trash2, Search, ChevronDown } from "lucide-react";
+
 import AddProductModal from "@/Components/product/AddProduct";
 import EditProductModal from "@/Components/product/EditProduct";
 import { Button } from "@/Components/ui/button";
@@ -25,13 +26,7 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/Components/ui/dialog";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/Components/ui/select";
+import { Combobox } from "@/Components/ui/Combobox";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 import { router } from "@inertiajs/react";
@@ -48,6 +43,8 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/Components/ui/pagination";
+
+import BarcodeButton from "@/Components/ui/BarcodeButton";
 
 interface Props {
     initialProducts: {
@@ -86,6 +83,9 @@ export default function ProductManagement({
     const [selectedCategory, setSelectedCategory] = useState(
         filters.category || "all"
     );
+
+    const [isBarcodeModalOpen, setIsBarcodeModalOpen] = useState(false);
+    const [currentBarcode, setCurrentBarcode] = useState("");
 
     const handleSearch = (value: string) => {
         setSearchTerm(value);
@@ -126,6 +126,11 @@ export default function ProductManagement({
         }
     };
 
+    const handleShowBarcode = (productCode: string) => {
+        setCurrentBarcode(productCode);
+        setIsBarcodeModalOpen(true);
+    };
+
     console.log(initialProducts);
 
     return (
@@ -141,29 +146,26 @@ export default function ProductManagement({
                                 Product Management
                             </CardTitle>
                             <div className="flex items-center space-x-2">
-                                <Select
+                                <Combobox
+                                    items={[
+                                        {
+                                            value: "all",
+                                            label: "All Categories",
+                                        },
+                                        ...initialCategories.map(
+                                            (category) => ({
+                                                value: category.id.toString(),
+                                                label: category.name,
+                                            })
+                                        ),
+                                    ]}
+                                    placeholder="Select a category"
+                                    onSelect={handleCategoryChange}
                                     value={selectedCategory}
-                                    onValueChange={(value) =>
-                                        handleCategoryChange(value)
+                                    onChange={(value) =>
+                                        setSelectedCategory(value)
                                     }
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a category" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">
-                                            All Categories
-                                        </SelectItem>
-                                        {initialCategories.map((category) => (
-                                            <SelectItem
-                                                key={category.id}
-                                                value={category.id.toString()}
-                                            >
-                                                {category.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                />
                                 <div className="relative">
                                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
                                     <Input
@@ -228,6 +230,11 @@ export default function ProductManagement({
                                             </TableCell>
 
                                             <TableCell className="text-right">
+                                                <BarcodeButton
+                                                    productCode={
+                                                        product.product_code
+                                                    }
+                                                />
                                                 {/* Edit Product */}
                                                 <EditProductModal
                                                     initialCategories={

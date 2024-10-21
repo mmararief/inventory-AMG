@@ -131,7 +131,6 @@ export default function AddProduct({
                                 placeholder="Enter description"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                required
                                 disabled={!productCode}
                             />
                         </div>

@@ -62,7 +62,6 @@ export default function AddLocation() {
                                 placeholder="Enter description"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
-                                required
                             />
                         </div>
                         <div className="space-y-2">

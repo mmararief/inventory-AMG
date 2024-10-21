@@ -175,33 +175,28 @@ export default function TypeManagement({
                                         }
                                     />
                                 </div>
-                                <Select
+
+                                <Combobox
+                                    items={[
+                                        {
+                                            value: "all",
+                                            label: "All Categories",
+                                        },
+                                        ...categories.map((category) => ({
+                                            value: category.id.toString(),
+                                            label: category.name,
+                                        })),
+                                    ]}
+                                    placeholder="Select a category"
                                     value={categoryFilter.toString()}
-                                    onValueChange={(value) =>
+                                    onSelect={(value) =>
                                         setCategoryFilter(
                                             value === "all"
                                                 ? ""
                                                 : parseInt(value)
                                         )
                                     }
-                                >
-                                    <SelectTrigger className="w-[180px]">
-                                        <SelectValue placeholder="Filter by Category" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">
-                                            All Categories
-                                        </SelectItem>
-                                        {categories.map((category) => (
-                                            <SelectItem
-                                                key={category.id}
-                                                value={category.id.toString()}
-                                            >
-                                                {category.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                />
 
                                 <Button
                                     onClick={() =>

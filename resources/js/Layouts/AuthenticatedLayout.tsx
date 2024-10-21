@@ -113,7 +113,9 @@ export default function Authenticated({
                         <Button
                             asChild
                             variant={
-                                url === "/stock-movements" ? "default" : "ghost"
+                                url.startsWith("/stock-movements")
+                                    ? "default"
+                                    : "ghost"
                             }
                             className="w-full justify-start mb-2"
                         >
